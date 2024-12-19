@@ -14,5 +14,18 @@ client.login(process.env.DISCORD_BOT_TOKEN);
 
 // Executes the logic for an interaction based on the command name.
 client.on('interactionCreate', (interaction) => {
-  require(`./interactions/${interaction.commandName}.js`)(interaction);
+  let filePath = `interactions/${interaction.commandName}`;
+
+  // If the interaction is a slash command, check for subcommand groups and subcommands.
+  if (interaction.isChatInputCommand()) {
+    if (interaction.options.getSubcommandGroup()) {
+      filePath += `/${interaction.options.getSubcommandGroup()}`;
+    }
+
+    if (interaction.options.getSubcommand()) {
+      filePath += `/${interaction.options.getSubcommand()}`;
+    }
+  }
+
+  require(`./${filePath}.js`)(interaction);
 });
