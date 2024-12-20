@@ -14,6 +14,14 @@ client.login(process.env.DISCORD_BOT_TOKEN);
 
 // Executes the logic for an interaction based on the command name.
 client.on('interactionCreate', (interaction) => {
+  // If the interaction is a message component or modal submit, extract the command name from the custom id.
+  if (interaction.isMessageComponent() || interaction.isModalSubmit()) {
+    let tmp = interaction.customId.split('_');
+
+    interaction.commandName = tmp.shift(); // Remove the command name from the front of the tmp array
+    interaction.customId = tmp.join('_'); // Put the custom ID back together, sans command name
+  }
+
   let filePath = `interactions/${interaction.commandName}`;
 
   // If the interaction is a slash command, check for subcommand groups and subcommands.
